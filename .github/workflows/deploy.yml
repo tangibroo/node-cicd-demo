@@ -5,11 +5,21 @@ on:
     branches: [main]
 
 jobs:
-  test:
+  build-and-push:
     runs-on: ubuntu-26.04
     steps:
       - name: Checkout kode
         uses: actions/checkout@v6
 
-      - name: Tes Hello
-        run: echo "Workflow berjalan!"
+      - name: Login ke Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build dan push image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/node-app:latest
